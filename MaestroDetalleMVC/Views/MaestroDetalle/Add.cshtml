@@ -1,0 +1,119 @@
+﻿@model MaestroDetalleMVC.Models.ViewModels.VentaViewModel
+@{
+    ViewBag.Title = "Maestro Detalle";
+}
+
+<h2>@ViewBag.Title</h2>
+<div style="color: chartreuse">
+    @ViewBag.Message
+</div>
+<!--Esto de abajo es un Html Helper-->
+@using (Html.BeginForm("Add", "MaestroDetalle", FormMethod.Post))
+{
+    <div class="row">
+        <div class="form-group">
+            @Html.LabelFor(d => d.cliente)
+            @Html.TextBoxFor(d => d.cliente)
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <!--Aquí voy a agregar una acción para generar html dinámicamente.-->
+        <div class="form-group">
+            Cantidad
+            <input type="text" id="Cantidad" />
+            Nombre
+            <input type="text" id="Nombre" />
+            Precio
+            <input type="number" id="Precio" />
+            <input value="Agregar" type="button" onclick="AgregaConcepto(); return false;" />
+        </div>
+        <div id="divConceptos">
+            <table id="TablaConceptos">
+                <tr>
+                    <th>Cantidad</th>
+                    <th>Nombre</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+                <!--Datos de prueba =
+                <tr>
+                    <td>2</td>
+                    <td>Papas fritas</td>
+                    <td>10</td>
+                    <td>20</td>
+                </tr>
+                -->
+            </table>
+
+            <!--Utilizo un input type hidden para hacer ese match con mi Lista de conceptos que esta en mi VentaViewModel-->
+            <!--en la propiedad name va a hacer match con mi lista de conceptos que esta indicada en mi VentaViewModel.-->
+            <!--<input type="hidden" name="conceptos.index" id="conceptos.Index" value="0" />-->
+            <!--Relacionar los valores para que se inserten en mi modelo de conceptos. Cantidad, Nombre, precioUnitario,
+            Total pero este se autogenerará desde el controlador.-->
+            <!--<input type="hidden" name="conceptos[0].Cantidad" id="conceptos[0].Cantidad" value="2" />
+            <input type="hidden" name="conceptos[0].Nombre" id="conceptos[0].Nombre" value="Papas fritas" />
+            <input type="hidden" name="conceptos[0].PrecioUnitario" id="conceptos[0].PrecioUnitario" value="10" />-->
+        </div>
+        <div class="form-group">
+            <input type="submit" />
+        </div>
+
+
+    </div>
+}
+    <script>
+            var num = 0;
+            function AgregaConcepto() {
+                let Cantidad = document.getElementById("Cantidad").value;
+                let Precio = document.getElementById("Precio").value;
+                let Nombre = document.getElementById("Nombre").value;
+
+                //agregamos tabla
+                let Tabla = document.getElementById("TablaConceptos");
+                let TR = document.createElement("tr");
+                let TDCantidad = document.createElement("td");
+                let TDNombre = document.createElement("td");
+                let TDPrecio = document.createElement("td");
+                let TDTotal = document.createElement("td");
+                TR.appendChild(TDCantidad);
+                TR.appendChild(TDNombre);
+                TR.appendChild(TDPrecio);
+                TR.appendChild(TDTotal);
+                TDCantidad.innerHTML = Cantidad;
+                TDNombre.innerHTML = Nombre;
+                TDPrecio.innerHTML = Precio;
+                TDTotal.innerHTML = parseFloat(Cantidad) * parseFloat(Precio);
+                Tabla.appendChild(TR);
+
+                //agregamos hiddens
+                let DivConceptos = document.getElementById("divConceptos");
+                let HiddenIndex = document.createElement("input");
+                let HiddenCantidad = document.createElement("input");
+                let HiddenNombre = document.createElement("input");
+                let HiddenPrecio = document.createElement("input");
+                HiddenIndex.name = "conceptos.Index";
+                HiddenIndex.value = num;
+                HiddenIndex.type = "hidden";
+                HiddenCantidad.name = "conceptos[" + num + "].Cantidad";
+                HiddenCantidad.value = Cantidad;
+                HiddenCantidad.type = "hidden";
+                HiddenNombre.name = "conceptos[" + num + "].Nombre";
+                HiddenNombre.value = Nombre;
+                HiddenNombre.type = "hidden";
+                HiddenPrecio.name = "conceptos[" + num + "].PrecioUnitario";
+                HiddenPrecio.value = Precio;
+                HiddenPrecio.type = "hidden";
+                DivConceptos.appendChild(HiddenIndex);
+                DivConceptos.appendChild(HiddenCantidad);
+                DivConceptos.appendChild(HiddenNombre);
+                DivConceptos.appendChild(HiddenPrecio);
+
+                document.getElementById("Cantidad").value = "";
+                document.getElementById("Precio").value = "";
+                document.getElementById("Nombre").value = "";
+
+                num++;
+            }
+    </script>
+
